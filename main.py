@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
@@ -28,8 +29,9 @@ categorical_cols = ["zip_code"]
 numerical_cols = [col for col in X.columns if col not in categorical_cols]
 
 preprocessor = ColumnTransformer([
-    ("onehot", OneHotEncoder(handle_unknown='ignore'), categorical_cols)
-], remainder='passthrough')
+    ("onehot", OneHotEncoder(handle_unknown="ignore"), categorical_cols),
+    ("num", "passthrough", numerical_cols)
+])
 
 # Create the pipeline
 model = Pipeline(steps=[
