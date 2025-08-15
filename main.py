@@ -3,7 +3,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
@@ -14,7 +13,7 @@ drive.mount('/content/drive')
 %cd /content/drive/MyDrive/Content
 
 # Load CSV file
-df = pd.read_csv("Sample_price_data.csv")  
+df = pd.read_csv("Sample_price_data.csv")
 
 # Remove unwanted columns
 columns_to_drop = ["base_price", "zip_multiplier"]
@@ -29,9 +28,8 @@ categorical_cols = ["zip_code"]
 numerical_cols = [col for col in X.columns if col not in categorical_cols]
 
 preprocessor = ColumnTransformer([
-    ("onehot", OneHotEncoder(handle_unknown="ignore"), categorical_cols),
-    ("num", "passthrough", numerical_cols)
-])
+    ("onehot", OneHotEncoder(handle_unknown='ignore'), categorical_cols)
+], remainder='passthrough')
 
 # Create the pipeline
 model = Pipeline(steps=[
@@ -49,7 +47,7 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 print("R² Score:", r2_score(y_test, y_pred))
 print("MAE:", mean_absolute_error(y_test, y_pred))
-rmse = mean_squared_error(y_test, y_pred) ** 0.5  
+rmse = mean_squared_error(y_test, y_pred) ** 0.5
 print("RMSE:", rmse)
 
 #  Predicting from a sample input
@@ -67,6 +65,11 @@ predicted_price = model.predict(sample_input)[0]
 # Convert to INR
 inr_price = 83.00 * predicted_price
 print(f"Predicted House Price: ₹{inr_price:,.2f}")
+
+import joblib
+
+# Save the trained pipeline
+joblib.dump(model, "house_price_model.pkl")
 
 
 
